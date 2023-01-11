@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en_US" style="width: 100%; height: 100%;">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-39988758-2"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-39988758-2');
+</script>
+<meta charset="utf-8" />
+<link href="css/mapbox-gl.css" rel="stylesheet" />
+<link href="css/world-eq-locator.css" rel="stylesheet" />
+<title>World EQ Locator</title>
+<meta name="description" content="A 3D hypocenter map of earthquakes all around the world. This data visualization was produced by Akihiko Kusanagi." />
+<meta name="viewport" content="user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height, initial-scale=1" />
+<meta property="og:title" content="World EQ Locator" />
+<meta property="og:description" content="A 3D hypocenter map of earthquakes all around the world. This data visualization was produced by Akihiko Kusanagi." />
+<meta property="og:locale" content="en_US" />
+<link rel="canonical" href="https://nagix.github.io/world-eq-locator" />
+<meta property="og:url" content="https://nagix.github.io/world-eq-locator" />
+<meta property="og:site_name" content="World EQ Locator" />
+<meta property="og:image" content="https://nagix.github.io/world-eq-locator/screenshot1.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@nagix" />
+<link rel="apple-touch-icon" sizes="180x180" href="https://nagix.github.io/world-eq-locator/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://nagix.github.io/world-eq-locator/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="https://nagix.github.io/world-eq-locator/favicon-16x16.png">
+<link rel="manifest" href="https://nagix.github.io/world-eq-locator/site.webmanifest">
+<script src="js/deck-gl.min.js"></script>
+<script src="js/mapbox-gl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-scale@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-scale-chromatic@3"></script>
+</head>
+<body>
+<div id="map">
+  <div id="recent-list-bg" class="bg">
+    <div id="recent-list" class="menu">
+      <div>Recent earthquakes</div>
+      <div></div>
+    </div>
+  </div>
+  <div id="info-bg" class="bg">
+    <div class="info">
+      <div>About World EQ Locator</div>
+      <div>
+        <p><strong>How to use</strong></p>
+        <p>
+          Drag or arrow keys: Pan<br>
+          Mouse wheel or +/- keys: Zoom<br>
+          Right mouse or Ctrl + drag: Bearing/pitch<br>
+          Two-finger pinch: Bearing/zoom<br>
+          Two-finger drag: Pitch<br>
+          Shift + left/right arrow keys: Bearing<br>
+          Shift + up/down arrow keys: Pitch<br>
+        </p>
+        <hr>
+        <p>This data visualization is provided by <a href="https://nagix.github.io" target="_blank">Akihiko Kusanagi</a>. The earthquake data for this visualization are sourced from <a href="https://earthquake.usgs.gov/data/comcat/" target="_blank">ANSS Comprehensive Earthquake Catalog (ComCat)</a> by United States Geological Survey (USGS).</p>
+        <p>Source code is available at <a href="https://github.com/nagix/world-eq-locator" target="_blank">GitHub repository</a>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="js/world-eq-locator.js"></script>
+</body>
