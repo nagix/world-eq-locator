@@ -58,30 +58,36 @@ const pad = (n, size) => {
     const s = '0000' + n;
     return s.substr(s.length - size);
 }
-const toLocalDateTimeString = d => {
+const toLocalDateString = d => {
     const year = pad(d.getFullYear(), 4);
     const month = pad(d.getMonth() + 1, 2);
     const date = pad(d.getDate(), 2);
-    const hours = pad(d.getHours(), 2);
-    const minutes = pad(d.getMinutes(), 2);
-    const seconds = pad(d.getSeconds(), 2);
-    return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    return `${year}-${month}-${date}`;
 };
-const toUTCDateTimeString = d => {
+const toUTCDateString = d => {
     const year = pad(d.getUTCFullYear(), 4);
     const month = pad(d.getUTCMonth() + 1, 2);
     const date = pad(d.getUTCDate(), 2);
+    return `${year}-${month}-${date}`;
+};
+const toLocalTimeString = d => {
+    const hours = pad(d.getHours(), 2);
+    const minutes = pad(d.getMinutes(), 2);
+    const seconds = pad(d.getSeconds(), 2);
+    return `${hours}:${minutes}:${seconds}`;
+};
+const toUTCTimeString = d => {
     const hours = pad(d.getUTCHours(), 2);
     const minutes = pad(d.getUTCMinutes(), 2);
     const seconds = pad(d.getUTCSeconds(), 2);
-    return `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+    return `${hours}:${minutes}:${seconds}`;
 };
 const toTimezoneOffsetString = d => {
     const offset = d.getTimezoneOffset();
     const sign = offset < 0 ? '+' : '-';
     const hours = pad(Math.floor(Math.abs(offset) / 60), 2);
     const minutes = pad(Math.abs(offset) % 60, 2);
-    return `(UTC${sign}${hours}:${minutes})`;
+    return `UTC${sign}${hours}:${minutes}`;
 };
 
 const options = {};
@@ -300,7 +306,8 @@ Promise.all([
             options.m = mag === null ? undefined : mag;
             options.s = mmi === null ? undefined : mmi;
 
-            const dateTimeString = toLocalDateTimeString(new Date(options.t));
+            const dateString = toLocalDateString(new Date(options.t));
+            const timeString = toLocalTimeString(new Date(options.t));
             const timezoneOffsetString = toTimezoneOffsetString(new Date(options.t));
             const magnitudeString = isNaN(options.m) || options.m === null ? '' : 'M' + options.m.toFixed(1);
 
@@ -308,7 +315,7 @@ Promise.all([
             Object.assign(listItem, {
                 id: quake.id,
                 className: quake.id === initialParams.id ? 'menu-item active' : 'menu-item',
-                innerHTML: `<div class="menu-check"></div><div class="menu-text">${dateTimeString} ${timezoneOffsetString}<br>${options.l} ${magnitudeString}</div>`
+                innerHTML: `<div class="menu-check"></div><div class="menu-text">${dateString} ${timeString} (${timezoneOffsetString})<br>${options.l} ${magnitudeString}</div>`
             });
             listItem.addEventListener('click', () => {
                 const activeListItem = mapElement.querySelector('.menu-item.active');
@@ -424,9 +431,11 @@ Promise.all([
         }
         Object.assign(params, _params);
 
-        const toDateTimeString = interactive ? toLocalDateTimeString : toUTCDateTimeString;
-        const dateTimeString = toDateTimeString(new Date(params.time));
-        const timezoneOffsetString = interactive ? toTimezoneOffsetString(new Date(params.time)) : '(UTC)';
+        const toDateString = interactive ? toLocalDateString : toUTCDateString;
+        const toTimeString = interactive ? toLocalTimeString : toUTCTimeString;
+        const dateString = toDateString(new Date(params.time));
+        const timeString = toTimeString(new Date(params.time));
+        const timezoneOffsetString = interactive ? toTimezoneOffsetString(new Date(params.time)) : 'UTC';
         const depthString = isNaN(params.depth) ? 'Unknown' : `${params.depth.toFixed(1)}km`;
         const intensityString = isNaN(params.mmi) ? '-' : INTENSITY_LOOKUP[Math.round(params.mmi)];
         const magnitudeString = isNaN(params.magnitude) ? 'Unknown' : params.magnitude.toFixed(1);
@@ -437,7 +446,9 @@ Promise.all([
             '<div class="panel-section">' +
             '<div class="panel-section-title">Time</div>' +
             '<div class="panel-section-body">' +
-            `<div class="panel-time-text">${dateTimeString}<br>${timezoneOffsetString}</div>` +
+            `<div class="panel-date-text">${dateString}</div>` +
+            `<div class="panel-time-text">${timeString}</div>` +
+            `<div class="panel-date-text">${timezoneOffsetString}</div>` +
             '</div>' +
             '</div>' +
             '<div class="panel-section">' +
