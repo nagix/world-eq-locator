@@ -407,30 +407,6 @@ Promise.all([
     };
 
     const setFinalView = () => {
-        flying = false;
-        panel.classList.remove('hidden');
-
-        const {zoom, padding} = calculateCameraOptions(params.depth || 0, 7);
-        map.easeTo({pitch: 60, zoom, padding, duration: 2000});
-    };
-
-    const setHypocenter = _params => {
-        if (interactive) {
-            hideMarker();
-            panel.classList.add('hidden');
-            map.off('moveend', setFinalView);
-        }
-        auto = !!(_params && _params.lng && _params.lat && _params.time);
-        if (!auto) {
-            map.easeTo({
-                padding: {top: 0, bottom: 0, left: 0, right: 0},
-                duration: 1000
-            });
-            hypocenterLayer.setProps({onHover});
-            return;
-        }
-        Object.assign(params, _params);
-
         const toDateString = interactive ? toLocalDateString : toUTCDateString;
         const toTimeString = interactive ? toLocalTimeString : toUTCTimeString;
         const dateString = toDateString(new Date(params.time));
@@ -488,7 +464,35 @@ Promise.all([
                 canvasElement.focus();
             });
             panel.appendChild(closeButton);
+        }
 
+        flying = false;
+        panel.classList.remove('hidden');
+
+        if (interactive) {
+            const {zoom, padding} = calculateCameraOptions(params.depth || 0, 7);
+            map.easeTo({pitch: 60, zoom, padding, duration: 2000});
+        }
+    };
+
+    const setHypocenter = _params => {
+        if (interactive) {
+            hideMarker();
+            panel.classList.add('hidden');
+            map.off('moveend', setFinalView);
+        }
+        auto = !!(_params && _params.lng && _params.lat && _params.time);
+        if (!auto) {
+            map.easeTo({
+                padding: {top: 0, bottom: 0, left: 0, right: 0},
+                duration: 1000
+            });
+            hypocenterLayer.setProps({onHover});
+            return;
+        }
+        Object.assign(params, _params);
+
+        if (interactive) {
             hypocenterLayer.setProps({onHover: null});
             map.flyTo({
                 center: [params.lng, params.lat],
@@ -500,6 +504,7 @@ Promise.all([
             flying = true;
             map.once('moveend', setFinalView);
         } else {
+            setFinalView();
             updateMarker();
             updateWave(750);
         }
