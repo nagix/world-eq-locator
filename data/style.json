@@ -12,6 +12,7 @@
       "url": "https://tile.openstreetmap.jp/data/planet.json"
     }
   },
+  "sprite": "https://tiles.basemaps.cartocdn.com/gl/dark-matter-gl-style/sprite",
   "glyphs": "https://tiles.basemaps.cartocdn.com/fonts/{fontstack}/{range}.pbf",
   "layers": [
     {
@@ -1851,6 +1852,212 @@
             [4, 1]
           ]
         }
+      }
+    },
+    {
+      "id": "watername_ocean",
+      "type": "symbol",
+      "source": "carto",
+      "source-layer": "water_name",
+      "minzoom": 0,
+      "maxzoom": 5,
+      "filter": ["all", ["has", "name"], ["==", "$type", "Point"], ["==", "class", "ocean"]],
+      "layout": {
+        "text-field": "{name}",
+        "symbol-placement": "point",
+        "text-size": {
+          "stops": [
+            [0, 13],
+            [2, 14],
+            [4, 18]
+          ]
+        },
+        "text-font": [
+          "Montserrat Medium Italic",
+          "Open Sans Italic"
+        ],
+        "text-line-height": 1.2,
+        "text-padding": 2,
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-pitch-alignment": "auto",
+        "text-rotation-alignment": "auto",
+        "text-max-width": 6,
+        "text-letter-spacing": 0.1
+      },
+      "paint": {
+        "text-color": "rgba(109, 123, 129, 1)",
+        "text-halo-color": "rgba(0,0,0,0.7)",
+        "text-halo-width": 1,
+        "text-halo-blur": 0
+      }
+    },
+    {
+      "id": "watername_sea",
+      "type": "symbol",
+      "source": "carto",
+      "source-layer": "water_name",
+      "minzoom": 5,
+      "filter": ["all", ["has", "name"], ["==", "$type", "Point"], ["==", "class", "sea"]],
+      "layout": {
+        "text-field": "{name}",
+        "symbol-placement": "point",
+        "text-size": 12,
+        "text-font": [
+          "Montserrat Medium Italic",
+          "Open Sans Italic"
+        ],
+        "text-line-height": 1.2,
+        "text-padding": 2,
+        "text-allow-overlap": false,
+        "text-ignore-placement": false,
+        "text-pitch-alignment": "auto",
+        "text-rotation-alignment": "auto",
+        "text-max-width": 6,
+        "text-letter-spacing": 0.1
+      },
+      "paint": {
+        "text-color": "#3c3c3c",
+        "text-halo-color": "rgba(0,0,0,0.7)",
+        "text-halo-width": 1,
+        "text-halo-blur": 0
+      }
+    },
+    {
+      "id": "place_country_2",
+      "type": "symbol",
+      "source": "carto",
+      "source-layer": "place",
+      "minzoom": 3,
+      "maxzoom": 10,
+      "filter": ["all", ["==", "class", "country"], [">=", "rank", 3], ["has", "iso_a2"]],
+      "layout": {
+        "text-field": "{name_en}",
+        "text-font": [
+          "Montserrat Medium",
+          "Open Sans Bold"
+        ],
+        "text-size": {
+          "stops": [
+            [3, 10],
+            [5, 11],
+            [6, 12],
+            [7, 13],
+            [8, 14]
+          ]
+        },
+        "text-transform": "uppercase"
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [3, "rgba(157, 157, 157, 1)"],
+            [5, "rgba(114, 114, 114, 1)"],
+            [6, "rgba(112, 112, 112, 1)"]
+          ]
+        },
+        "text-halo-color": "#111",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "place_country_1",
+      "type": "symbol",
+      "source": "carto",
+      "source-layer": "place",
+      "minzoom": 2,
+      "maxzoom": 7,
+      "filter": ["all", ["==", "class", "country"], ["<=", "rank", 2]],
+      "layout": {
+        "text-field": "{name_en}",
+        "text-font": [
+          "Montserrat Medium",
+          "Open Sans Bold"
+        ],
+        "text-size": {
+          "stops": [
+            [3, 11],
+            [4, 12],
+            [5, 13],
+            [6, 14]
+          ]
+        },
+        "text-transform": "uppercase",
+        "text-max-width": {
+          "stops": [
+            [2, 6],
+            [3, 6],
+            [4, 9],
+            [5, 12]
+          ]
+        }
+      },
+      "paint": {
+        "text-color": {
+          "stops": [
+            [3, "rgba(158, 182, 189, 1)"],
+            [5, "rgba(118, 126, 137, 1)"],
+            [6, "rgba(120, 141, 147, 1)"]
+          ]
+        },
+        "text-halo-color": "#111",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "place_state",
+      "type": "symbol",
+      "source": "carto",
+      "source-layer": "place",
+      "minzoom": 5,
+      "maxzoom": 10,
+      "filter": ["all", ["==", "class", "state"], ["<=", "rank", 4]],
+      "layout": {
+        "text-field": "{name_en}",
+        "text-font": [
+          "Montserrat Medium",
+          "Open Sans Bold"
+        ],
+        "text-size": {
+          "stops": [
+            [5, 12],
+            [7, 14]
+          ]
+        },
+        "text-transform": "uppercase",
+        "text-max-width": 9
+      },
+      "paint": {
+        "text-color": "rgba(203, 230, 230, 1)",
+        "text-halo-color": "#111",
+        "text-halo-width": 0
+      }
+    },
+    {
+      "id": "place_continent",
+      "type": "symbol",
+      "source": "carto",
+      "source-layer": "place",
+      "minzoom": 0,
+      "maxzoom": 2,
+      "filter": ["all", ["==", "class", "continent"]],
+      "layout": {
+        "text-field": "{name_en}",
+        "text-font": [
+          "Montserrat Medium",
+          "Open Sans Bold"
+        ],
+        "text-transform": "uppercase",
+        "text-size": 14,
+        "text-letter-spacing": 0.1,
+        "text-max-width": 9,
+        "text-justify": "center",
+        "text-keep-upright": false
+      },
+      "paint": {
+        "text-color": "rgba(135, 164, 179, 1)",
+        "text-halo-color": "#111",
+        "text-halo-width": 1
       }
     }
   ],
