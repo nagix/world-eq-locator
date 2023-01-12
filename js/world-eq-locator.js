@@ -309,13 +309,13 @@ Promise.all([
             const dateString = toLocalDateString(new Date(options.t));
             const timeString = toLocalTimeString(new Date(options.t));
             const timezoneOffsetString = toTimezoneOffsetString(new Date(options.t));
-            const magnitudeString = isNaN(options.m) || options.m === null ? '' : 'M' + options.m.toFixed(1);
+            const magnitudeString = isNaN(options.m) || options.m === null ? '' : 'M' + options.m.toFixed(1) + ' - ';
 
             const listItem = document.createElement('div');
             Object.assign(listItem, {
                 id: quake.id,
                 className: quake.id === initialParams.id ? 'menu-item active' : 'menu-item',
-                innerHTML: `<div class="menu-check"></div><div class="menu-text">${dateString} ${timeString} (${timezoneOffsetString})<br>${options.l} ${magnitudeString}</div>`
+                innerHTML: `<div class="menu-check"></div><div class="menu-text">${dateString} ${timeString} (${timezoneOffsetString})<br>${magnitudeString}${options.l}</div>`
             });
             listItem.addEventListener('click', () => {
                 const activeListItem = mapElement.querySelector('.menu-item.active');

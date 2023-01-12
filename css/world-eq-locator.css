@@ -72,6 +72,7 @@ body {
 .menu>div:last-child {
 	max-height: calc(100% - 39px);
 	border-radius: 0 0 10px 10px;
+	overflow-x: hidden;
 	overflow-y: scroll;
 }
 .menu-item {
