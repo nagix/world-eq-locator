@@ -91,7 +91,7 @@ const toTimezoneOffsetString = d => {
 };
 
 const options = {};
-for (const key of ['id', 'lng', 'lat', 'd', 't', 'l', 'm', 's', 'static']) {
+for (const key of ['id', 'lng', 'lat', 'd', 't', 'l', 'm', 's', 'g', 'static']) {
     const regex = new RegExp(`(?:\\?|&)${key}=(.*?)(?:&|$)`);
     const match = location.search.match(regex);
     options[key] = match ? decodeURIComponent(match[1]) : undefined;
@@ -106,7 +106,8 @@ const getParams = options => ({
     time: options.t,
     location: options.l,
     magnitude: isNaN(options.m) ? undefined : +options.m,
-    mmi: isNaN(options.m) ? undefined : +options.s
+    mmi: isNaN(options.m) ? undefined : +options.s,
+    sig: isNaN(options.g) ? undefined : +options.g
 });
 const initialParams = getParams(options);
 const params = {};
@@ -267,7 +268,7 @@ Promise.all([
     ),
     initialParams.id ? fetch(`https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/${initialParams.id}.geojson`).then(res => res.json()).then(data => {
         const [lng, lat, z] = data.geometry.coordinates;
-        const {time, place, mag, mmi} = data.properties;
+        const {time, place, mag, mmi, sig} = data.properties;
         Object.assign(initialParams, {
             lng,
             lat,
@@ -275,7 +276,8 @@ Promise.all([
             time,
             location: place,
             magnitude: isNaN(mag) || mag === null ? undefined : mag,
-            mmi: isNaN(mmi) || mmi === null ? undefined : mmi
+            mmi: isNaN(mmi) || mmi === null ? undefined : mmi,
+            sig: isNaN(sig) || sig === null ? undefined : sig
         });
     }).catch(err => {
         initialParams.id = undefined;
@@ -296,7 +298,7 @@ Promise.all([
         for (const quake of quakes.features) {
             const options = {};
             const [lng, lat, z] = quake.geometry.coordinates;
-            const {time, place, mag, mmi} = quake.properties;
+            const {time, place, mag, mmi, sig} = quake.properties;
             options.id = quake.id;
             options.lng = lng;
             options.lat = lat;
@@ -305,6 +307,7 @@ Promise.all([
             options.t = time;
             options.m = mag === null ? undefined : mag;
             options.s = mmi === null ? undefined : mmi;
+            options.g = sig === null ? undefined : sig;
 
             const dateString = toLocalDateString(new Date(options.t));
             const timeString = toLocalTimeString(new Date(options.t));
@@ -315,7 +318,7 @@ Promise.all([
             Object.assign(listItem, {
                 id: quake.id,
                 className: quake.id === initialParams.id ? 'menu-item active' : 'menu-item',
-                innerHTML: `<div class="menu-check"></div><div class="menu-text">${dateString} ${timeString} (${timezoneOffsetString})<br>${magnitudeString}${options.l}</div>`
+                innerHTML: `<div class="menu-check"></div><div class="menu-text">${dateString} ${timeString} (${timezoneOffsetString})<br><span class="significance-label-${options.g >= 600 ? 2 : options.g >= 400 ? 1 : 0}">${magnitudeString}${options.l}</span></div>`
             });
             listItem.addEventListener('click', () => {
                 const activeListItem = mapElement.querySelector('.menu-item.active');

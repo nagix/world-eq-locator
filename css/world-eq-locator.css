@@ -102,6 +102,15 @@ body {
 #recent-list .menu-item>div {
 	height: 40px;
 }
+.significance-label-0 {
+}
+.significance-label-1 {
+	font-weight: bold;
+}
+.significance-label-2 {
+	font-weight: bold;
+	color: rgb(201, 71, 73);
+}
 .info {
 	position: absolute;
 	top: 10px;
