@@ -115,9 +115,7 @@ let flying = false;
 
 const mapElement = document.getElementById('map');
 
-const isMobile = () => {
-    return mapElement.clientWidth < 640;
-};
+const isMobile = () => mapElement.clientWidth < 640;
 const calculateCameraOptions = (depth, maxZoom) => {
     const mobile = isMobile();
     const height = mapElement.clientHeight;
@@ -247,6 +245,10 @@ Object.assign(panel, {
 });
 mapElement.appendChild(panel);
 
+map.once('load', () => {
+    loaded = true;
+});
+
 Promise.all([
     fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson').then(res => res.json()),
     fetch('data/hypocenters.json').then(res => res.json()).then(data =>
@@ -282,12 +284,7 @@ Promise.all([
     }).catch(err => {
         initialParams.id = undefined;
     }) : Promise.resolve(),
-    new Promise(resolve => {
-        map.once('styledata', resolve);
-        map.once('load', () => {
-            loaded = true;
-        });
-    })
+    new Promise(resolve => map.once('styledata', resolve))
 ]).then(([quakes, hypocenterLayer]) => {
     map.addLayer(hypocenterLayer, 'waterway');
 
@@ -553,7 +550,7 @@ Promise.all([
         hypocenterLayer.setProps({onHover});
     } else {
         map.once(loaded ? 'idle' : 'load', () => {
-        setHypocenter(initialParams);
+            setHypocenter(initialParams);
             if (!interactive) {
                 const completed = document.createElement('div');
                 completed.id = 'completed';
