@@ -548,8 +548,12 @@ Promise.all([
 
     if (!auto) {
         hypocenterLayer.setProps({onHover});
+        map.once(loaded ? 'idle' : 'load', () => {
+            document.getElementById('loader').style.display = 'none';
+        });
     } else {
         map.once(loaded ? 'idle' : 'load', () => {
+            document.getElementById('loader').style.display = 'none';
             setHypocenter(initialParams);
             if (!interactive) {
                 const completed = document.createElement('div');
