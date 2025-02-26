@@ -250,7 +250,7 @@ map.once('load', () => {
 });
 
 Promise.all([
-    fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_month.geojson').then(res => res.json()),
+    fetch('https://api.nagi-p.com/usgs/earthquakes/').then(res => res.json()),
     fetch('data/hypocenters.json').then(res => res.json()).then(data =>
         new deck.MapboxLayer({
             id: 'hypocenters',
@@ -268,7 +268,7 @@ Promise.all([
             getRadius: 500
         })
     ),
-    initialParams.id ? fetch(`https://earthquake.usgs.gov/earthquakes/feed/v1.0/detail/${initialParams.id}.geojson`).then(res => res.json()).then(data => {
+    initialParams.id ? fetch(`https://api.nagi-p.com/usgs/earthquakes/${initialParams.id}`).then(res => res.json()).then(data => {
         const [lng, lat, z] = data.geometry.coordinates;
         const {time, place, mag, mmi, sig} = data.properties;
         Object.assign(initialParams, {
