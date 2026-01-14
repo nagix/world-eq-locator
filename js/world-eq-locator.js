@@ -249,25 +249,35 @@ map.once('load', () => {
     loaded = true;
 });
 
+let hypocenters;
+
 Promise.all([
     fetch('https://api.nagi-p.com/usgs/earthquakes/').then(res => res.json()),
-    fetch('data/hypocenters.json').then(res => res.json()).then(data =>
-        new deck.MapboxLayer({
+    fetch('data/hypocenters.dat').then(res => res.arrayBuffer()).then(buffer => {
+        hypocenters = new Float32Array(buffer);
+        const colors = new Float32Array(hypocenters.length);
+        for (let i = 0; i < hypocenters.length; i += 3) {
+            const [rgb, r, g, b] = colorScale(hypocenters[i + 2]).match(/(\d+), (\d+), (\d+)/);
+            colors.set([+r / 255, +g / 255, +b / 255], i);
+        }
+        return new deck.MapboxLayer({
             id: 'hypocenters',
             type: deck.ScatterplotLayer,
-            data,
+            data: {
+                length: hypocenters.length / 3,
+                attributes: {
+                    getPosition: {value: hypocenters, size: 3},
+                    getFillColor: {value: colors, size: 3}
+                }
+            },
             pickable: true,
             opacity: 0.2,
             radiusMinPixels: 2,
             billboard: true,
             antialiasing: false,
-            getFillColor: d => {
-                const [rgb, r, g, b] = colorScale(d.position[2]).match(/(\d+), (\d+), (\d+)/);
-                return [+r, +g, +b];
-            },
             getRadius: 500
-        })
-    ),
+        });
+    }),
     initialParams.id ? fetch(`https://api.nagi-p.com/usgs/earthquakes/${initialParams.id}`).then(res => res.json()).then(data => {
         const [lng, lat, z] = data.geometry.coordinates;
         const {time, place, mag, mmi, sig} = data.properties;
@@ -335,18 +345,18 @@ Promise.all([
 
     const updateMarker = info => {
         const viewport = map.__deck.getViewports()[0];
-        const hLng = auto ? params.lng : info.object.position[0];
+        const hLng = auto ? params.lng : hypocenters[info.index * 3];
         const cLng = map.getCenter().lng;
         const diff1 = (hLng - cLng + 540) % 360 - 180;
         const diff2 = Math.sign(hLng) - Math.sign(cLng);
         const offset = diff1 * diff2 < 0 ? Math.sign(diff1) * 360 : 0;
         const [ex, ey] = auto ?
             viewport.project([params.lng + offset, params.lat]) :
-            info.viewport.project([info.object.position[0] + offset, info.object.position[1]]);
+            info.viewport.project([hypocenters[info.index * 3] + offset, hypocenters[info.index * 3 + 1]]);
         const [hx, hy] = auto ?
             viewport.project([params.lng + offset, params.lat, -(params.depth || 0) * 1000]) :
             [info.x, info.y];
-        const depth = auto ? -(params.depth || 0) * 1000 : info.object.position[2];
+        const depth = auto ? -(params.depth || 0) * 1000 : hypocenters[info.index * 3 + 2];
 
         wave1.setAttributeNS(null, 'cx', hx);
         wave1.setAttributeNS(null, 'cy', hy);
@@ -397,7 +407,7 @@ Promise.all([
 
     const onHover = info => {
         if (info.layer && info.layer.id === 'hypocenters') {
-            if (info.object) {
+            if (info.picked) {
                 updateMarker(info);
             } else {
                 hideMarker();

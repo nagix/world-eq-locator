@@ -1,6 +1,6 @@
 # World EQ Locator
 
-A 3D hypocenter map of earthquakes all around the world. Based on hypocenter data from the United States Geological Survey (USGS), approximately 600,000 earthquakes of magnitude 2.5 or greater since 2000 are displayed.
+A 3D hypocenter map of earthquakes all around the world. Based on hypocenter data from the United States Geological Survey (USGS), approximately 690,000 earthquakes of magnitude 2.5 or greater since 2000 are displayed.
 
 ![Screenshot](https://nagix.github.io/world-eq-locator/screenshot1.jpg)
 
